@@ -1,0 +1,18 @@
+<?php
+
+/*
+ * This file is part of Symplify
+ * Copyright (c) 2015 Tomas Votruba (http://tomasvotruba.cz).
+ */
+
+namespace Symplify\ActionAutowire\Contract\DependencyInjection;
+
+interface ControllerClassMapInterface
+{
+    public function addController(string $id, string $class);
+
+    /**
+     * @return string[]
+     */
+    public function getControllers() : array;
+}

@@ -1,0 +1,30 @@
+{
+    "name": "symplify/controller-autowire",
+    "description": "Adds support to autowire controller constructor without pain.",
+    "keywords": ["Symfony", "controller", "autowire"],
+    "license": "MIT",
+    "require": {
+        "php": "~7.0",
+        "nette/robot-loader": "^2.3",
+        "symfony/config": "^3.0",
+        "symfony/dependency-injection": "^3.0",
+        "symfony/http-kernel": "^3.0",
+        "symfony/yaml": "^3.0"
+    },
+    "require-dev": {
+        "nette/utils": "^2.4",
+        "symfony/framework-bundle": "^3.0",
+        "symplify/coding-standard": "^0.3",
+        "phpunit/phpunit": "^5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Symplify\\ActionAutowire\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Symplify\\ActionAutowire\\Tests\\": "tests"
+        }
+    }
+}
