@@ -16,12 +16,12 @@ use Symplify\ActionAutowire\DependencyInjection\ControllerClassMap;
 use Symplify\ActionAutowire\DependencyInjection\Extension\ContainerExtension;
 use Symplify\ActionAutowire\HttpKernel\Controller\ControllerFinder;
 
-final class SymplifyMethodAutowireBundle extends Bundle
+final class SymplifyActionAutowireBundle extends Bundle
 {
     /**
      * @var string
      */
-    const ALIAS = 'symplify_controller_autowire';
+    const ALIAS = 'symplify_action_autowire';
 
     /**
      * {@inheritdoc}
