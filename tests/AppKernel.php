@@ -5,7 +5,7 @@ namespace Symplify\ActionAutowire\Tests;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use Symplify\ActionAutowire\SymplifyMethodAutowireBundle;
+use Symplify\ActionAutowire\SymplifyActionAutowireBundle;
 
 final class AppKernel extends Kernel
 {
@@ -16,7 +16,7 @@ final class AppKernel extends Kernel
     {
         return [
             new FrameworkBundle(),
-            new SymplifyMethodAutowireBundle(),
+            new SymplifyActionAutowireBundle(),
         ];
     }
 

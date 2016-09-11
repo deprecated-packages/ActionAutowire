@@ -3,17 +3,19 @@
 namespace Symplify\ActionAutowire\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\ControllerResolver;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Tests\Controller;
-use Symplify\ActionAutowire\HttpKernel\Controller\ControllerResolver;
-use Symplify\ActionAutowire\Tests\CompleteTestSource\DoNotScan\SomeRegisteredController;
-use Symplify\ActionAutowire\Tests\CompleteTestSource\Scan\ContainerAwareController;
-use Symplify\ActionAutowire\Tests\HttpKernel\Controller\ControllerFinderSource\SomeController;
-use Symplify\ActionAutowire\Tests\HttpKernel\Controller\ControllerFinderSource\SomeService;
+use Symplify\ActionAutowire\DependencyInjection\ServiceLocator;
+use Symplify\ActionAutowire\Tests\CompleteSource\SomeService;
+use Symplify\ActionAutowire\Tests\Controller\SomeController;
 
 final class CompleteTest extends TestCase
 {
+    /**
+     * @var ServiceLocator
+     */
+    private $serviceLocator;
+
     /**
      * @var ControllerResolver
      */
@@ -24,62 +26,28 @@ final class CompleteTest extends TestCase
         $kernel = new AppKernel('test_env', true);
         $kernel->boot();
 
+        $this->serviceLocator = $kernel->getContainer()
+            ->get('symplify.action_autowire.service_locator');
+
         $this->controllerResolver = $kernel->getContainer()
-            ->get('default.controller_resolver');
+            ->get('debug.controller_resolver');
     }
 
-    public function testControllerResolver()
+    public function testServiceLocator()
     {
-        $this->assertInstanceOf(ControllerResolver::class, $this->controllerResolver);
+        $this->assertInstanceOf(SomeService::class, $this->serviceLocator->getByType(SomeService::class));
+
+        $this->assertFalse($this->serviceLocator->getByType('missing'));
     }
 
-    public function testMissingControllerParameter()
-    {
-        $request = new Request();
-        $this->assertFalse($this->controllerResolver->getController($request));
-    }
-
-    public function testGetAutowiredController()
+    public function testGetAutowiredControllerAction()
     {
         $request = new Request();
-        $request->attributes->set('_controller', SomeController::class.'::someAction');
+        $request->attributes->set('_controller', SomeController::class.'::someServiceAwareAction');
 
-        /** @var SomeController $controller */
-        $controller = $this->controllerResolver->getController($request)[0];
+        $controller = $this->controllerResolver->getController($request);
+        $arguments = $this->controllerResolver->getArguments($request, $controller);
 
-        $this->assertInstanceOf(SomeController::class, $controller);
-        $this->assertInstanceOf(SomeService::class, $controller->getSomeService());
-    }
-
-    public function testGetContainerAwareController()
-    {
-        $request = new Request();
-        $request->attributes->set('_controller', ContainerAwareController::class.'::someAction');
-
-        /** @var ContainerAwareController $controller */
-        $controller = $this->controllerResolver->getController($request)[0];
-
-        $this->assertInstanceOf(ContainerAwareController::class, $controller);
-        $this->assertInstanceOf(ContainerInterface::class, $controller->getContainer());
-    }
-
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
-     */
-    public function testGetControllerServiceMissing()
-    {
-        $request = new Request();
-        $request->attributes->set('_controller', 'some.missing.controller.service:someAction');
-
-        $this->controllerResolver->getController($request);
-    }
-
-    public function testGetControllerServiceRegisteredInConfig()
-    {
-        $request = new Request();
-        $request->attributes->set('_controller', 'some.controller.service:someAction');
-
-        $controller = $this->controllerResolver->getController($request)[0];
-        $this->assertInstanceOf(SomeRegisteredController::class, $controller);
+        $this->assertInstanceOf(SomeService::class, $arguments[0]);
     }
 }

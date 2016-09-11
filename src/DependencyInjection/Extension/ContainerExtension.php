@@ -7,9 +7,10 @@
 
 namespace Symplify\ActionAutowire\DependencyInjection\Extension;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symplify\ActionAutowire\SymplifyMethodAutowireBundle;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 final class ContainerExtension extends Extension
 {
@@ -18,7 +19,7 @@ final class ContainerExtension extends Extension
      */
     public function getAlias() : string
     {
-        return SymplifyMethodAutowireBundle::ALIAS;
+        return 'symplify_action_autowire';
     }
 
     /**
@@ -26,5 +27,7 @@ final class ContainerExtension extends Extension
      */
     public function load(array $config, ContainerBuilder $containerBuilder)
     {
+        $loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__.'/../../Resources/config'));
+        $loader->load('services.yml');
     }
 }
