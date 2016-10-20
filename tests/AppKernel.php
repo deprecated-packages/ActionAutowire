@@ -9,9 +9,11 @@ use Symplify\ActionAutowire\SymplifyActionAutowireBundle;
 
 final class AppKernel extends Kernel
 {
-    /**
-     * {@inheritdoc}
-     */
+    public function __construct()
+    {
+        parent::__construct('ActionAutowire', true);
+    }
+
     public function registerBundles()
     {
         return [
@@ -20,9 +22,6 @@ final class AppKernel extends Kernel
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/Resources/config/config.yml');
